@@ -1,0 +1,77 @@
+.day {
+  border-radius: 0.9rem;
+  border: 1px solid #0c1c02;
+  min-width: 2.2rem;
+  height: 4rem;
+  margin: 0.2rem;
+}
+
+.today {
+  height: 5rem;
+  min-width: 3rem;
+}
+.period {
+  background: tomato;
+}
+
+.period:first-child {
+  margin-left: 0;
+}
+
+.cycle {
+  display: flex;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  overflow: scroll;
+}
+
+.cycle-view {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0px;
+  font-size: 12px;
+}
+.center {
+  text-align: center;
+}
+
+.card {
+  padding: 0 0 1rem 0;
+  border-radius: 0.8rem;
+  margin: 1rem 0;
+  padding: 1rem 0;
+  background: #b9cfba;
+}
+.card-title {
+  margin-top: 0;
+  padding: 0.25rem;
+}
+
+.insights {
+  display: flex;
+  justify-content: space-around;
+}
+
+.insights-button {
+  width: 6rem;
+  height: 7.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  border: none;
+  border-radius: 0.8rem;
+}
+
+.pink {
+  background: #ffdac7;
+}
+.green {
+  background: #7c690a;
+}
+.orange {
+  background: #eb6424;
+}
