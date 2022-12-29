@@ -12,9 +12,9 @@ export default component$(() => {
 
   return (
     <section>
-      <CurrentCycle />
+      {/* <CurrentCycle /> */}
       <CyclePrediction />
-      <CycleHistory />
+      {/* <CycleHistory /> */}
       <DailyInsights />
     </section>
   );

@@ -4,6 +4,8 @@
   min-width: 2.2rem;
   height: 4rem;
   margin: 0.2rem;
+  /* scroll-snap-align: start; */
+  transition: all;
 }
 
 .today {
@@ -24,6 +26,8 @@
   justify-content: center;
   align-items: center;
   overflow: scroll;
+  scroll-margin: 0;
+  /* scroll-snap-type: x mandatory; */
 }
 
 .cycle-view {

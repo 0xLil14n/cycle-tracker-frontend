@@ -1,5 +1,6 @@
 import { component$, useStylesScoped$ } from '@builder.io/qwik';
-import Cycle from './Cycle';
+import CycleComponent from '~/components/cycle/CycleComponent';
+import NewCycle from '~/components/cycle/NewCycle';
 import DailyInsights from './DailyInsights';
 import styles from './tracker.css?inline';
 
@@ -19,7 +20,12 @@ export default component$(() => {
           cycle started {currCycle.periodStart} ({currCycle.length} days)
         </div>
       </h3>
-      <Cycle periodLength={currCycle.periodLength} today={6} cycleLength={13} />
+      <CycleComponent
+        periodLength={currCycle.periodLength}
+        today={6}
+        cycleLength={100}
+      />
+      <NewCycle />
       <DailyInsights />
     </div>
   );

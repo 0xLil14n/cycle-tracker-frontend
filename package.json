@@ -38,5 +38,8 @@
     "undici": "5.14.0",
     "vite": "4.0.1",
     "vite-tsconfig-paths": "3.5.0"
+  },
+  "dependencies": {
+    "react-swipeable": "^7.0.0"
   }
 }
