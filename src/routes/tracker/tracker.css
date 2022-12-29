@@ -13,6 +13,10 @@
 .period {
   background: tomato;
 }
+.stack {
+  display: flex;
+  flex-direction: column;
+}
 
 .period:first-child {
   margin-left: 0;
