@@ -1,0 +1,35 @@
+.day {
+  border-radius: 0.9rem;
+  border: 1px solid #0c1c02;
+  min-width: 2.2rem;
+  height: 4rem;
+  margin: 0.2rem;
+  scroll-snap-align: start;
+  transition: all;
+  flex-shrink: 0;
+}
+
+.cycle {
+  display: flex;
+  scroll-snap-stop: x mandatory;
+  /* margin: 0; */
+  /* justify-content: center; */
+  align-items: center;
+  overflow: scroll;
+  scroll-margin: 0;
+  scroll-snap-type: x mandatory;
+}
+
+.today {
+  /* height: 5rem;
+  min-width: 3rem; */
+  transform: scale3d(1.3, 1.3, 1.3);
+}
+
+.period {
+  background: tomato;
+}
+
+.period:first-child {
+  margin-left: 0;
+}
