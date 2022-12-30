@@ -6,15 +6,9 @@ import {
   useStore,
   useStylesScoped$,
 } from '@builder.io/qwik';
+import { Cycle } from '~/components/cycle/CycleList';
 import styles from './tracker.css?inline';
 
-interface Cycle {
-  date: string;
-  symptoms: boolean;
-  isPeriod: boolean;
-  isPeriodPredicted: boolean;
-  isOvulationPredicted: boolean;
-}
 export const onScroll = (
   r: Signal<Element | undefined>,
   activeDate: string
@@ -30,120 +24,60 @@ export const onScroll = (
   });
   return activeDate;
 };
+export const makeDay = (date: Date) => {
+  return {
+    date: date.toLocaleDateString('default', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    }),
+    symptoms: false,
+    isPeriod: false,
+    isPeriodPredicted: false,
+    isOvulationPredicted: false,
+  };
+};
+export const fetchFutureDays = (days: Cycle[]) => {
+  const date = new Date(days[days.length - 1].date);
+  const oneDay = 24 * 60 * 60 * 1000;
 
-export const cycle: Cycle[] = [
-  {
-    date: 'December 21, 2022',
-    symptoms: true,
-    isPeriod: true,
-    isPeriodPredicted: true,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 22, 2022',
-    symptoms: true,
-    isPeriod: true,
-    isPeriodPredicted: true,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 23, 2022',
-    symptoms: true,
-    isPeriod: true,
-    isPeriodPredicted: true,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 24, 2022',
-    symptoms: true,
-    isPeriod: true,
-    isPeriodPredicted: true,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 25, 2022',
-    symptoms: false,
-    isPeriod: true,
-    isPeriodPredicted: true,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 26, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 27, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 28, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 29, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 30, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'December 31, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'January 1, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'January 2, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'January 3, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-  {
-    date: 'January 4, 2022',
-    symptoms: false,
-    isPeriod: false,
-    isPeriodPredicted: false,
-    isOvulationPredicted: false,
-  },
-];
+  days = [...days, makeDay(new Date(date.getTime() + oneDay))];
+  return days;
+};
+export const fetchBeforeDays = (days: Cycle[]) => {
+  const oneDay = 24 * 60 * 60 * 1000;
+  days = [
+    makeDay(new Date(new Date(days[0].date).getTime() - oneDay)),
+    ...days,
+  ];
+  return days;
+};
+export const firstFetch = () => {
+  const today = new Date();
+  const oneDay = 24 * 60 * 60 * 1000;
+  const before = [...new Array(4).keys()].map((x, i) => {
+    return makeDay(new Date(today.getTime() - oneDay * (4 - i)));
+  });
+  return [
+    ...before,
+    {
+      date: today.toLocaleDateString(),
+      symptoms: false,
+      isPeriod: false,
+      isPeriodPredicted: false,
+      isOvulationPredicted: false,
+    },
+  ];
+};
 export default component$(() => {
   useStylesScoped$(styles);
   const today = new Date();
   const ref = useSignal<Element>();
+  const firstRef = useSignal<Element>();
+  const lastRef = useSignal<Element>();
+
   const store = useStore({
-    activeIndex: 6,
+    cycleList: firstFetch(),
     activeDate: `${today.toLocaleDateString('default', {
       month: 'long',
       day: 'numeric',
@@ -154,31 +88,60 @@ export default component$(() => {
   useClientEffect$(({ track }) => {
     const r = track(() => ref);
     const activeDate = track(() => store.activeDate);
+    const cycleList = track(() => store.cycleList);
+    // store.cycleList = firstFetch(cycleList);
     store.activeDate = onScroll(r, activeDate);
+    if (ref.value) ref.value.scrollTo();
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          store.cycleList = fetchFutureDays(cycleList);
+        }
+      });
+    });
+    const firstObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // store.cycleList = fetchBeforeDays(cycleList);
+        }
+      });
+    });
+    if (lastRef.value) observer.observe(lastRef.value);
+    if (firstRef.value) firstObserver.observe(firstRef.value);
   });
 
   return (
-    <>
+    <div class="stack">
       {store.activeDate}
       <div
         ref={ref}
         class="cycle"
         onScroll$={() => {
-          console.log('store.activeDate:', store.activeDate);
           store.activeDate = onScroll(ref, store.activeDate);
         }}
       >
-        {cycle.map((p, i) => (
-          <div
-            id={p.date}
-            class={`day  ${p.isPeriod ? 'period' : ''} ${
+        {store.cycleList.map((p, i) => {
+          const params: any = {
+            class: `day  ${p.isPeriod ? 'period' : ''} ${
               p.date === store.activeDate ? 'today' : ''
-            }`}
-          >
-            {i}
-          </div>
-        ))}
+            }`,
+            id: p.date,
+          };
+          if (i === store.cycleList.length - 1) {
+            params['ref'] = lastRef;
+          } else if (i === 0) params['ref'] = firstRef;
+          return i === store.cycleList.length - 1 ? (
+            <div {...params}>
+              lastRef:{new Date(p.date).getMonth()} /
+              {new Date(p.date).getDate()}
+            </div>
+          ) : (
+            <div {...params}>
+              {new Date(p.date).getMonth()} /{new Date(p.date).getDate()}
+            </div>
+          );
+        })}
       </div>
-    </>
+    </div>
   );
 });

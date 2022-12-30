@@ -25,7 +25,7 @@
 .cycle {
   display: flex;
   margin: 0;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
   overflow: scroll;
 }
