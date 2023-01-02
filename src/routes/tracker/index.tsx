@@ -11,11 +11,10 @@ export default component$(() => {
   useStylesScoped$(styles);
 
   return (
-    <section>
+    <>
       <CurrentCycle />
       <CyclePrediction />
       <CycleHistory />
-      <DailyInsights />
-    </section>
+    </>
   );
 });

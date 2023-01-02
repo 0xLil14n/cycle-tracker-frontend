@@ -19,7 +19,7 @@ export default component$(() => {
           cycle started {currCycle.periodStart} ({currCycle.length} days)
         </div>
       </h3>
-      <Cycle periodLength={currCycle.periodLength} today={6} cycleLength={13} />
+      <Cycle />
       <DailyInsights />
     </div>
   );
